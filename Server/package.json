@@ -1,0 +1,63 @@
+{
+  "name": "badgefinder",
+  "version": "1.0.0",
+  "description": "The first step to digitizing Scouting",
+  "main": "index.js",
+  "scripts": {
+    "server": "node index.js",
+    "client": "node client/badgefinder/src/App.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/samchatterley/badgefinder.git"
+  },
+  "keywords": [
+    "badges",
+    "scouting",
+    "guiding",
+    "achievements",
+    "recognition",
+    "skills",
+    "learning",
+    "education",
+    "web",
+    "app",
+    "React",
+    "MySQL"
+  ],
+  "author": "Sam Chatterley",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/samchatterley/badgefinder/issues"
+  },
+  "homepage": "https://github.com/samchatterley/badgefinder#readme",
+  "dependencies": {
+    "axios": "^1.4.0",
+    "bcrypt": "^5.1.0",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.2",
+    "cloudinary": "^1.36.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "express-async-handler": "^1.2.0",
+    "express-session": "^1.17.3",
+    "express-validator": "^6.15.0",
+    "jsonwebtoken": "^9.0.0",
+    "mongodb": "^5.4.0",
+    "mongoose": "^7.1.0",
+    "mysql": "^2.18.1",
+    "mysql2": "^3.2.3",
+    "sequelize": "^6.31.0",
+    "supertest": "^6.3.3",
+    "yup": "^1.1.1"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^14.0.0",
+    "@testing-library/user-event": "^14.4.3",
+    "chai": "^4.3.7",
+    "jest": "^29.5.0",
+    "mocha": "^10.2.0"
+  }
+}

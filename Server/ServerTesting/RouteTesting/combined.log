@@ -1,0 +1,24 @@
+{"level":"info","message":"Ping successful. Connected to BadgeFinder database.","service":"user-service"}
+{"level":"info","message":"Ping successful. Connected to BadgeFinder database.","service":"user-service"}
+{"level":"info","message":"Server is running on port: 5000","service":"user-service"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [12/Jul/2023:10:46:45 +0000] \"GET /badges HTTP/1.1\" 404 145 \"-\" \"-\"","service":"user-service"}
+{"level":"info","message":"Ping successful. Connected to BadgeFinder database.","service":"user-service"}
+{"level":"info","message":"Server is running on port: 5000","service":"user-service"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [12/Jul/2023:10:47:56 +0000] \"GET /badges HTTP/1.1\" 404 145 \"-\" \"-\"","service":"user-service"}
+{"level":"info","message":"Ping successful. Connected to BadgeFinder database.","service":"user-service"}
+{"level":"info","message":"Server is running on port: 5000","service":"user-service"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [12/Jul/2023:10:54:26 +0000] \"GET /badges HTTP/1.1\" 404 145 \"-\" \"-\"","service":"user-service"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [12/Jul/2023:10:55:01 +0000] \"GET /badges/1 HTTP/1.1\" 404 147 \"-\" \"-\"","service":"user-service"}
+{"level":"info","message":"Ping successful. Connected to BadgeFinder database.","service":"user-service"}
+{"level":"info","message":"Server is running on port: 5000","service":"user-service"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [12/Jul/2023:10:55:09 +0000] \"GET /badges/ HTTP/1.1\" 404 146 \"-\" \"-\"","service":"user-service"}
+{"level":"info","message":"Ping successful. Connected to BadgeFinder database.","service":"user-service"}
+{"level":"info","message":"Server is running on port: 5000","service":"user-service"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [12/Jul/2023:10:55:17 +0000] \"GET /badge HTTP/1.1\" 404 144 \"-\" \"-\"","service":"user-service"}
+{"level":"info","message":"Ping successful. Connected to BadgeFinder database.","service":"user-service"}
+{"level":"info","message":"Server is running on port: 5000","service":"user-service"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [12/Jul/2023:10:55:57 +0000] \"GET /badge HTTP/1.1\" 404 144 \"-\" \"-\"","service":"user-service"}
+{"level":"info","message":"Ping successful. Connected to BadgeFinder database.","service":"user-service"}
+{"level":"info","message":"Server is running on port: 5000","service":"user-service"}
+{"level":"info","message":"Ping successful. Connected to BadgeFinder database.","service":"user-service"}
+{"level":"info","message":"Ping successful. Connected to BadgeFinder database.","service":"user-service"}
