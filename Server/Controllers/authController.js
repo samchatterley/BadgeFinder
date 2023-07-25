@@ -3,8 +3,9 @@ const User = require("../Models/UserService");
 const jwt = require("jsonwebtoken");
 const { logger } = require("../logger");
 
-if (!process.env.JWT_SECRET) {
-  throw new Error("JWT_SECRET environment variable is not set");
+const JWT_SECRET = process.env.JWT_SECRET || 'default_secret';
+if(JWT_SECRET === 'default_secret') {
+  logger.warn("JWT_SECRET environment variable is not set. Using default.");
 }
 
 /**
@@ -35,13 +36,18 @@ const handleErrors = (err) => {
     });
   }
 
+  // Handle specific error cases
+  if (err instanceof jwt.JsonWebTokenError) {
+    errors.token = "Invalid token";
+  }
+
   return errors;
 };
 
-const maxAge = 3 * 24 * 60 * 60; // 3 days in seconds
+const TOKEN_EXPIRATION = process.env.TOKEN_EXPIRATION || '3d'; 
 const createToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: maxAge
+  return jwt.sign({ id }, JWT_SECRET, {
+    expiresIn: TOKEN_EXPIRATION,
   });
 };
 
@@ -51,11 +57,15 @@ module.exports.signup_post = async (req, res) => {
   try {
     const user = await User.create({ email, password });
     const token = createToken(user._id);
-    res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 });
-    logger.info(`User with id ${user._id} signed up successfully.`);
+    res.cookie("jwt", token, { httpOnly: true, secure: true, maxAge: TOKEN_EXPIRATION * 1000 });
+    logger.info(`User with id ${user._id} and IP ${req.ip} signed up successfully.`);
     res.status(201).json({ user: user._id });
   } catch (err) {
     const errors = handleErrors(err);
+    if (err.code === 11000) {
+      res.status(409).json({ errors });
+      return;
+    }
     res.status(400).json({ errors });
   }
 };
@@ -66,11 +76,15 @@ module.exports.login_post = async (req, res) => {
   try {
     const user = await User.login(email, password);
     const token = createToken(user._id);
-    res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 });
-    logger.info(`User with id ${user._id} logged in successfully.`);
+    res.cookie("jwt", token, { httpOnly: true, secure: true, maxAge: TOKEN_EXPIRATION * 1000 });
+    logger.info(`User with id ${user._id} and IP ${req.ip} logged in successfully.`);
     res.status(200).json({ user: user._id });
   } catch (err) {
     const errors = handleErrors(err);
+    if (err.code === 11000) {
+      res.status(409).json({ errors });
+      return;
+    }
     res.status(400).json({ errors });
   }
 };
