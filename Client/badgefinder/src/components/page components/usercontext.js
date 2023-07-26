@@ -1,75 +1,94 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import jwtDecode from 'jwt-decode';
-import axios from 'axios';
+import React, { useState, useEffect, useCallback, useMemo } from 'react'
+import jwtDecode from 'jwt-decode'
+import axios from 'axios'
 
-export const UserContext = React.createContext();
+export const UserContext = React.createContext()
 
 export const UserProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [error, setError] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [userAchievements, setUserAchievements] = useState({});
+  const [user, setUser] = useState(null)
+  const [error, setError] = useState(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [userAchievements, setUserAchievements] = useState({})
 
-  const handleCheckboxChange = useCallback(async (badgeId, requirementId, isChecked) => {
-    try {
-      const response = await axios.post(`http://localhost:5000/users/${user._id}/achievements`, {
-        badge_id: badgeId,
-        requirement_id: requirementId,
-        achieved: isChecked,
-      });
-  
-      if (response.status === 200) {
-        setUserAchievements((prevAchievements) => ({
-          ...prevAchievements,
-          [badgeId]: isChecked
-            ? [...(prevAchievements[badgeId] || []), requirementId]
-            : (prevAchievements[badgeId] || []).filter(id => id !== requirementId),
-        }));
+  const handleCheckboxChange = useCallback(
+    async (badgeId, requirementId, isChecked) => {
+      try {
+        const response = await axios.post(
+          `http://localhost:5000/users/${user._id}/achievements`,
+          {
+            badge_id: badgeId,
+            requirement_id: requirementId,
+            achieved: isChecked
+          }
+        )
+
+        if (response.status === 200) {
+          setUserAchievements((prevAchievements) => ({
+            ...prevAchievements,
+            [badgeId]: isChecked
+              ? [...(prevAchievements[badgeId] || []), requirementId]
+              : (prevAchievements[badgeId] || []).filter(
+                  (id) => id !== requirementId
+                )
+          }))
+        }
+      } catch (error) {
+        console.error(error)
       }
-    } catch (error) {
-      console.error(error);
-    }
-  }, [user]);
+    },
+    [user]
+  )
 
   useEffect(() => {
-    async function fetchUserData() {
+    async function fetchUserData () {
       try {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem('token')
         if (token) {
-          const { userId } = jwtDecode(token);
-          const response = await fetch(`http://localhost:5000/auth/user/${userId}`, {
-            headers: {
-              'Authorization': `Bearer ${token}`
+          const { userId } = jwtDecode(token)
+          const response = await fetch(
+            `http://localhost:5000/auth/user/${userId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`
+              }
             }
-          });
+          )
 
           if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            throw new Error(`HTTP error! status: ${response.status}`)
           }
 
-          const userData = await response.json();
-          setUser(userData);
-          
-          const achievementsResponse = await axios.get(`http://localhost:5000/users/${userId}/achievements`);
-          setUserAchievements(achievementsResponse.data.badges);
+          const userData = await response.json()
+          setUser(userData)
 
-          setIsLoading(false);
+          const achievementsResponse = await axios.get(
+            `http://localhost:5000/users/${userId}/achievements`
+          )
+          setUserAchievements(achievementsResponse.data.badges)
+
+          setIsLoading(false)
         }
       } catch (e) {
-        console.error("Error fetching user data:", e);
-        setError(e.toString());
-        setIsLoading(false);
+        console.error('Error fetching user data:', e)
+        setError(e.toString())
+        setIsLoading(false)
       }
     }
 
-    fetchUserData();
-  }, []);
+    fetchUserData()
+  }, [])
 
-  const value = useMemo(() => ({ user, setUser, error, isLoading, userAchievements, handleCheckboxChange }), [user, setUser, error, isLoading, userAchievements, handleCheckboxChange]);
+  const value = useMemo(
+    () => ({
+      user,
+      setUser,
+      error,
+      isLoading,
+      userAchievements,
+      handleCheckboxChange
+    }),
+    [user, setUser, error, isLoading, userAchievements, handleCheckboxChange]
+  )
 
-  return (
-    <UserContext.Provider value={value}>
-      {children}
-    </UserContext.Provider>
-  );
-};
+  return <UserContext.Provider value={value}>{children}</UserContext.Provider>
+}
