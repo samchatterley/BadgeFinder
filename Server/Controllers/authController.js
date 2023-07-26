@@ -1,11 +1,12 @@
+
 require("dotenv").config();
 const User = require("../Models/UserService");
 const jwt = require("jsonwebtoken");
 const { logger } = require("../logger");
 
-const JWT_SECRET = process.env.JWT_SECRET || 'default_secret';
-if(JWT_SECRET === 'default_secret') {
-  logger.warn("JWT_SECRET environment variable is not set. Using default.");
+const JWT_SECRET = process.env.JWT_SECRET;
+if(!JWT_SECRET) {
+  throw new Error("JWT_SECRET environment variable is not set. The application will not run without it.");
 }
 
 /**
@@ -18,15 +19,15 @@ const handleErrors = (err) => {
   const errors = { email: "", password: "" };
 
   if (err.message.includes("incorrect email")) {
-    errors.email = "That email is not registered";
+    errors.email = "Incorrect email or password";
   }
 
   if (err.message.includes("incorrect password")) {
-    errors.password = "That password is incorrect";
+    errors.password = "Incorrect email or password";
   }
 
   if (err.code === 11000) {
-    errors.email = "That email is already registered";
+    errors.email = "That email is already in use";
     return errors;
   }
 
@@ -46,9 +47,19 @@ const handleErrors = (err) => {
 
 const TOKEN_EXPIRATION = process.env.TOKEN_EXPIRATION || '3d'; 
 const createToken = (id) => {
-  return jwt.sign({ id }, JWT_SECRET, {
+  const token = jwt.sign({ id }, JWT_SECRET, {
     expiresIn: TOKEN_EXPIRATION,
   });
+
+  // Convert TOKEN_EXPIRATION to milliseconds
+  let maxAge;
+  if (TOKEN_EXPIRATION.endsWith('d')) {
+    maxAge = parseInt(TOKEN_EXPIRATION.slice(0, -1)) * 24 * 60 * 60 * 1000;
+  } else {
+    maxAge = parseInt(TOKEN_EXPIRATION) * 1000; // Assumes seconds if no 'd' present
+  }
+
+  return { token, maxAge };
 };
 
 module.exports.signup_post = async (req, res) => {
@@ -56,9 +67,9 @@ module.exports.signup_post = async (req, res) => {
 
   try {
     const user = await User.create({ email, password });
-    const token = createToken(user._id);
-    res.cookie("jwt", token, { httpOnly: true, secure: true, maxAge: TOKEN_EXPIRATION * 1000 });
-    logger.info(`User with id ${user._id} and IP ${req.ip} signed up successfully.`);
+    const { token, maxAge } = createToken(user._id);
+    res.cookie("jwt", token, { httpOnly: true, secure: true, maxAge });
+    logger.info(`User signup successful.`);
     res.status(201).json({ user: user._id });
   } catch (err) {
     const errors = handleErrors(err);
@@ -75,9 +86,9 @@ module.exports.login_post = async (req, res) => {
 
   try {
     const user = await User.login(email, password);
-    const token = createToken(user._id);
-    res.cookie("jwt", token, { httpOnly: true, secure: true, maxAge: TOKEN_EXPIRATION * 1000 });
-    logger.info(`User with id ${user._id} and IP ${req.ip} logged in successfully.`);
+    const { token, maxAge } = createToken(user._id);
+    res.cookie("jwt", token, { httpOnly: true, secure: true, maxAge });
+    logger.info(`User login successful.`);
     res.status(200).json({ user: user._id });
   } catch (err) {
     const errors = handleErrors(err);
