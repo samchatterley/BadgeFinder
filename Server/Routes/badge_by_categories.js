@@ -1,9 +1,9 @@
-require("dotenv").config();
-const express = require("express");
-const router = express.Router();
-const { MongoClient } = require("mongodb");
-const { logger } = require("../logger");
-const rateLimit = require("express-rate-limit");
+require('dotenv').config()
+const express = require('express')
+const router = express.Router()
+const { MongoClient } = require('mongodb')
+const { logger } = require('../logger')
+const rateLimit = require('express-rate-limit')
 
 /**
  * Set up a rate limiter to limit requests to the API.
@@ -11,13 +11,13 @@ const rateLimit = require("express-rate-limit");
  */
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 100,
-});
+  max: 100
+})
 
-const uri = process.env.MONGODB_URI;
-const client = new MongoClient(uri, { useUnifiedTopology: true });
+const uri = process.env.MONGODB_URI
+const client = new MongoClient(uri, { useUnifiedTopology: true })
 
-router.use(limiter);
+router.use(limiter)
 
 /**
  * GET /
@@ -27,26 +27,28 @@ router.use(limiter);
  * If no badges are found, it sends a 404 status and an error message.
  * If there's an internal server error, it sends a 500 status and an error message.
  */
-router.get("/", async (req, res) => {
+router.get('/', async (req, res) => {
   try {
-    logger.info("Request received for badge search by category");
-    await client.connect();
-    const db = client.db("BadgeFinder");
-    const collection = db.collection("Badges");
-    const category = req.query.categories;
-    logger.info("Searching for badges in category:", category);
-    const badges = await collection.find({ categories: { $regex: `.*\\b${category}\\b.*`, $options: 'i' } }).toArray();
+    logger.info('Request received for badge search by category')
+    await client.connect()
+    const db = client.db('BadgeFinder')
+    const collection = db.collection('Badges')
+    const category = req.query.categories
+    logger.info('Searching for badges in category:', category)
+    const badges = await collection
+      .find({ categories: { $regex: `.*\\b${category}\\b.*`, $options: 'i' } })
+      .toArray()
     if (badges && badges.length > 0) {
-      logger.info(`${badges.length} badges found.`, badges);
-      res.status(200).json(badges);
+      logger.info(`${badges.length} badges found.`, badges)
+      res.status(200).json(badges)
     } else {
-      logger.info("No badges found in this category");
-      res.status(404).send("No badges found in this category");
+      logger.info('No badges found in this category')
+      res.status(404).send('No badges found in this category')
     }
   } catch (err) {
-    console.error(err);
-    res.status(500).send("Internal Server Error");
+    console.error(err)
+    res.status(500).send('Internal Server Error')
   }
-});
+})
 
-module.exports = router;
+module.exports = router

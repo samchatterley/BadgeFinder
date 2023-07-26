@@ -1,8 +1,8 @@
-require("dotenv").config();
-const express = require("express");
-const router = express.Router();
-const { logger } = require("../logger");
-const rateLimit = require("express-rate-limit");
+require('dotenv').config()
+const express = require('express')
+const router = express.Router()
+const { logger } = require('../logger')
+const rateLimit = require('express-rate-limit')
 
 /**
  * Set up a rate limiter to limit requests to the API.
@@ -10,10 +10,10 @@ const rateLimit = require("express-rate-limit");
  */
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 100,
-});
+  max: 100
+})
 
-router.use(limiter);
+router.use(limiter)
 
 /**
  * This function exports a router that handles GET requests to the `/badges` endpoint.
@@ -25,21 +25,21 @@ router.use(limiter);
  * @returns {Object} The router to handle requests to the `/badges` endpoint.
  */
 module.exports = (client) => {
-  router.get("/", async (req, res) => {
+  router.get('/', async (req, res) => {
     try {
-      logger.info("Handling request for /badges route.");
-      const db = client.db("BadgeFinder");
-      const collection = db.collection("Badges");
-      logger.info("About to execute database query.");
-      const result = await collection.find({}).toArray();
-      logger.info("Database query executed.");
-      logger.info(`${result.length} badges found.`);
-      res.send(result);
+      logger.info('Handling request for /badges route.')
+      const db = client.db('BadgeFinder')
+      const collection = db.collection('Badges')
+      logger.info('About to execute database query.')
+      const result = await collection.find({}).toArray()
+      logger.info('Database query executed.')
+      logger.info(`${result.length} badges found.`)
+      res.send(result)
     } catch (err) {
-      logger.info(`Error in /badges route: ${err}`);
-      res.status(500).send("Error retrieving badges");
+      logger.info(`Error in /badges route: ${err}`)
+      res.status(500).send('Error retrieving badges')
     }
-  });
+  })
 
-  return router;
-};
+  return router
+}

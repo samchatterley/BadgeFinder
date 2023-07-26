@@ -1,15 +1,15 @@
-import React, { useContext } from "react";
-import { UserContext } from './page components/usercontext';
-import { Box } from "@chakra-ui/react";
-import NavBar from "./page components/navbar";
+import React, { useContext } from 'react'
+import { UserContext } from './page components/usercontext'
+import { Box } from '@chakra-ui/react'
+import NavBar from './page components/navbar'
 
 const Profile = () => {
-  const [user] = useContext(UserContext);
-  let name;
-  if(user) {
-    name = `${user.user.firstName} ${user.user.lastName}`;
+  const [user] = useContext(UserContext)
+  let name
+  if (user) {
+    name = `${user.user.firstName} ${user.user.lastName}`
   } else {
-    name = "Loading..."
+    name = 'Loading...'
   }
 
   return (
@@ -18,7 +18,7 @@ const Profile = () => {
       <div>{name}</div> {/* Using the name here */}
       {/* Add other components or content for the homepage here */}
     </Box>
-  );
-};
-  
-export default Profile;
+  )
+}
+
+export default Profile
